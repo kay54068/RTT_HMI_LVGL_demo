@@ -1,4 +1,16 @@
+PROJECT(rtthread C CXX ASM)
+
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+
+# ------------------------------------------------------------------------------
+# Build Options 
+# ------------------------------------------------------------------------------
+option(BUILD_DOC "Build documentation with doxygen" OFF)
+
+set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(DOC_DIR ${ROOT_PATH}/docs)
+
 
 SET(CMAKE_SYSTEM_NAME Generic)
 SET(CMAKE_SYSTEM_PROCESSOR cortex-m4)
@@ -22,7 +34,12 @@ SET(CMAKE_SIZE "/usr/bin/arm-none-eabi-size")
 SET(CMAKE_EXE_LINKER_FLAGS " -mcpu=cortex-m4 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler -T ${CMAKE_SOURCE_DIR}/ld-script/fsp.ld -L ${CMAKE_SOURCE_DIR}/ld-script/")
 
 SET(CMAKE_CXX_STANDARD 14)
-PROJECT(rtthread C CXX ASM)
+
+
+message(STATUS "ROOT_PATH : \"${ROOT_PATH}\"")
+message(STATUS "DOC_DIR : \"${DOC_DIR}\"")
+
+
 INCLUDE_DIRECTORIES(
 	.
 	board/ports/audio
@@ -514,3 +531,9 @@ COMMAND ${CMAKE_OBJCOPY} -O binary ${CMAKE_PROJECT_NAME}.elf ${CMAKE_PROJECT_NAM
 ## Output hex
 COMMAND ${CMAKE_OBJCOPY} -O ihex ${CMAKE_PROJECT_NAME}.elf ${CMAKE_PROJECT_NAME}.hex COMMAND ${CMAKE_SIZE} ${CMAKE_PROJECT_NAME}.elf
 )
+
+
+if(BUILD_DOC)
+include(cmakelib/build_doxygen.cmake)
+build_doxygen()
+endif()

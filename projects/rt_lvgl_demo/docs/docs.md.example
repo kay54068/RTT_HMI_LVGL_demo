@@ -1,0 +1,96 @@
+📘 Doc example
+===
+
+<!-- 
+📘: Guide
+📙: Technology
+📗: Other
+-->
+
+<!--
+command example:
+
+\note
+this is a note.
+
+\todo
+this is a todo.
+
+\warning
+this is a warning.
+
+\bug
+this is a bug.
+
+\remarks
+this is a remarks.
+
+\deprecated
+this is a Deprecated.
+
+\invariant
+this is a Invariant. 
+
+
+\wavedrom{reg: [
+{bits: 8, name: 'IPO', attr: 'RO'},
+{bits: 7},
+{bits: 5, name: 'BRK', attr: 'RW'},
+{bits: 1, name: 'CPK'},
+{bits: 3, name: 'Clear'},
+{bits: 8}
+]}
+
+
+
+\dot
+digraph finite_state_machine {
+    rankdir=LR;
+    size="8,5"
+    node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
+    node [shape = circle];
+    LR_0 -> LR_2 [ label = "SS(B)" ];
+    LR_0 -> LR_1 [ label = "SS(S)" ];
+    LR_1 -> LR_3 [ label = "S($end)" ];
+    LR_2 -> LR_6 [ label = "SS(b)" ];
+    LR_2 -> LR_5 [ label = "SS(a)" ];
+    LR_2 -> LR_4 [ label = "S(A)" ];
+    LR_5 -> LR_7 [ label = "S(b)" ];
+    LR_5 -> LR_5 [ label = "S(a)" ];
+    LR_6 -> LR_6 [ label = "S(b)" ];
+    LR_6 -> LR_5 [ label = "S(a)" ];
+    LR_7 -> LR_8 [ label = "S(b)" ];
+    LR_7 -> LR_5 [ label = "S(a)" ];
+    LR_8 -> LR_6 [ label = "S(b)" ];
+    LR_8 -> LR_5 [ label = "S(a)" ];
+}
+\enddot
+
+
+\msc
+      hscale = "2";
+
+      a,b,c;
+
+      a->b [ label = "ab()" ] ;
+      b->c [ label = "bc(TRUE)"];
+      c=>c [ label = "process(1)" ];
+      c=>c [ label = "process(2)" ];
+      ...;
+      c=>c [ label = "process(n)" ];
+      c=>c [ label = "process(END)" ];
+      a<<=c [ label = "callback()"];
+      ---  [ label = "If more to run", ID="*" ];
+      a->a [ label = "next()"];
+      a->c [ label = "ac1()\nac2()"];
+      b<-c [ label = "cb(TRUE)"];
+      b->b [ label = "stalled(...)"];
+      a<-b [ label = "ab() = FALSE"];
+\endmsc
+
+
+-->
+
+# Introduction
+
+
