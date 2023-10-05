@@ -19,7 +19,7 @@ SET(CMAKE_CXX_COMPILER_WORKS TRUE)
 SET(CMAKE_OBJCOPY "/usr/bin/arm-none-eabi-objcopy")
 SET(CMAKE_SIZE "/usr/bin/arm-none-eabi-size")
 
-SET(CMAKE_EXE_LINKER_FLAGS " -mcpu=cortex-m4 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler -T ${CMAKE_SOURCE_DIR}/script/fsp.ld -L ${CMAKE_SOURCE_DIR}/script/")
+SET(CMAKE_EXE_LINKER_FLAGS " -mcpu=cortex-m4 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler -T ${CMAKE_SOURCE_DIR}/ld-script/fsp.ld -L ${CMAKE_SOURCE_DIR}/ld-script/")
 
 SET(CMAKE_CXX_STANDARD 14)
 PROJECT(rtthread C CXX ASM)

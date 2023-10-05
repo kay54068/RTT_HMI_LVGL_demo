@@ -1,0 +1,17 @@
+
+# Prerequisites
+*.d
+
+# Build dir
+/build*
+/Debug
+
+# Linker output
+rtthread.map
+rtthread.hex
+rtthread.elf
+
+# Object files
+*.o
+/Objects
+
