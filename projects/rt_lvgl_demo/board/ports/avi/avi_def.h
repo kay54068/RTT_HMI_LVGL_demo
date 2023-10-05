@@ -8,23 +8,20 @@
  * AVIFileFormat: https://web.archive.org/web/20170411001412/http://www.alexander-noe.com/video/documentation/avi.pdf
  * OpenDML AVI File Format Extensions: https://web.archive.org/web/20070112225112/http://www.the-labs.com/Video/odmlff2-avidef.pdf
  */
-typedef struct
-{
+typedef struct {
     uint32_t FourCC;
     uint32_t size;   //块大小，等于之后数据的大小
     /* 数据 uint8_t _data[size]; */
 } AVI_CHUNK_HEAD;
 
-typedef struct
-{
+typedef struct {
     uint32_t List;   //固定为"LIST"，如果是 RIFF List 则为 "RIFF"
     uint32_t size;   //块大小，等于之后数据的大小
     uint32_t FourCC;
     /* 数据 uint8_t _data[size-4]; */
 } AVI_LIST_HEAD;
 
-typedef struct
-{
+typedef struct {
     uint32_t FourCC;            //块ID，固定为avih
     uint32_t size;              //块大小，等于struct avi_avih_chunk去掉id和size的大小
     uint32_t us_per_frame;      //视频帧间隔时间(以微秒为单位)
@@ -40,16 +37,14 @@ typedef struct
     uint32_t reserved[4];       //保留值dwScale,dwRate,dwStart,dwLength
 } AVI_AVIH_CHUNK;
 
-typedef struct
-{
+typedef struct {
     int16_t left;
     int16_t top;
     int16_t right;
     int16_t bottom;
 } AVI_RECT_FRAME;
 
-typedef struct
-{
+typedef struct {
     uint32_t FourCC;            //块ID，固定为strh
     uint32_t size;              //块大小，等于struct avi_strh_chunk去掉id和size的大小
     uint32_t fourcc_type;       //流的类型，vids表示视频流，auds表示音频流
@@ -69,8 +64,7 @@ typedef struct
 } AVI_STRH_CHUNK;
 
 /*对于视频流，strf块结构如下*/
-typedef struct
-{
+typedef struct {
     uint32_t FourCC;             //块ID，固定为strf
     uint32_t size;               //块大小，等于struct avi_strf_chunk去掉id和size的大小
     uint32_t size1;              //size1含义和值同size一样
@@ -100,22 +94,19 @@ typedef struct __attribute__((packed))
 }
 AVI_AUDS_STRF_CHUNK;
 
-typedef struct
-{
+typedef struct {
     AVI_LIST_HEAD strl;
     AVI_STRH_CHUNK strh;
     AVI_VIDS_STRF_CHUNK strf;
 } AVI_STRL_LIST;
 
-typedef struct
-{
+typedef struct {
     AVI_LIST_HEAD hdrl;
     AVI_AVIH_CHUNK avih;
     AVI_STRL_LIST  strl;
 } AVI_HDRL_LIST;
 
-typedef struct
-{
+typedef struct {
     uint32_t FourCC; //块ID，固定为 "idx1"
     uint32_t flags;
     uint32_t chunkoffset;

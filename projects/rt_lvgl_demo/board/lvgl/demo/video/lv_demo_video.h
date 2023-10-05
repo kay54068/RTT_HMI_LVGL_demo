@@ -27,8 +27,7 @@ typedef enum {
     LV_MUSIC_STOP,
 } play_btn_starte_t;
 
-typedef struct
-{
+typedef struct {
     lv_obj_t obj;
     char *cur_fn;
     lv_mdeia_state_t state;

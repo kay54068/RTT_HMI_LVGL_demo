@@ -22,8 +22,7 @@
 static struct rt_i2c_client gt911_client;
 
 /* hardware section */
-static rt_uint8_t GT911_CFG_TBL[] =
-{
+static rt_uint8_t GT911_CFG_TBL[] = {
     0x6b, 0x00, 0x04, 0x58, 0x02, 0x05, 0x0d, 0x00, 0x01, 0x0f,
     0x28, 0x0f, 0x50, 0x32, 0x03, 0x05, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8a, 0x2a, 0x0c,
@@ -54,12 +53,10 @@ static rt_err_t gt911_write_reg(struct rt_i2c_client *dev, rt_uint8_t *data, rt_
     msgs.buf   = data;
     msgs.len   = len;
 
-    if (rt_i2c_transfer(dev->bus, &msgs, 1) == 1)
-    {
+    if(rt_i2c_transfer(dev->bus, &msgs, 1) == 1) {
         return RT_EOK;
     }
-    else
-    {
+    else {
         return -RT_ERROR;
     }
 }
@@ -78,12 +75,10 @@ static rt_err_t gt911_read_regs(struct rt_i2c_client *dev, rt_uint8_t *reg, rt_u
     msgs[1].buf   = data;
     msgs[1].len   = len;
 
-    if (rt_i2c_transfer(dev->bus, msgs, 2) == 2)
-    {
+    if(rt_i2c_transfer(dev->bus, msgs, 2) == 2) {
         return RT_EOK;
     }
-    else
-    {
+    else {
         return -RT_ERROR;
     }
 }
@@ -95,8 +90,7 @@ static rt_err_t gt911_get_product_id(struct rt_i2c_client *dev, rt_uint8_t *data
     reg[0] = (rt_uint8_t)(GT911_PRODUCT_ID >> 8);
     reg[1] = (rt_uint8_t)(GT911_PRODUCT_ID & 0xff);
 
-    if (gt911_read_regs(dev, reg, data, len) != RT_EOK)
-    {
+    if(gt911_read_regs(dev, reg, data, len) != RT_EOK) {
         LOG_E("read id failed");
         return -RT_ERROR;
     }
@@ -112,8 +106,7 @@ static rt_err_t gt911_get_info(struct rt_i2c_client *dev, struct rt_touch_info *
     reg[0] = (rt_uint8_t)(GT911_CONFIG_REG >> 8);
     reg[1] = (rt_uint8_t)(GT911_CONFIG_REG & 0xFF);
 
-    if (gt911_read_regs(dev, reg, out_info, out_len) != RT_EOK)
-    {
+    if(gt911_read_regs(dev, reg, out_info, out_len) != RT_EOK) {
         LOG_E("read info failed");
         return -RT_ERROR;
     }
@@ -133,8 +126,7 @@ static rt_err_t gt911_soft_reset(struct rt_i2c_client *dev)
     buf[1] = (rt_uint8_t)(GT911_COMMAND_REG & 0xFF);
     buf[2] = 0x02;
 
-    if (gt911_write_reg(dev, buf, 3) != RT_EOK)
-    {
+    if(gt911_write_reg(dev, buf, 3) != RT_EOK) {
         LOG_E("soft reset failed");
         return -RT_ERROR;
     }
@@ -151,13 +143,11 @@ static void gt911_touch_up(void *buf, int8_t id)
 {
     read_data = (struct rt_touch_data *)buf;
 
-    if (s_tp_dowm[id] == 1)
-    {
+    if(s_tp_dowm[id] == 1) {
         s_tp_dowm[id] = 0;
         read_data[id].event = RT_TOUCH_EVENT_UP;
     }
-    else
-    {
+    else {
         read_data[id].event = RT_TOUCH_EVENT_NONE;
     }
 
@@ -176,13 +166,11 @@ static void gt911_touch_down(void *buf, int8_t id, int16_t x, int16_t y, int16_t
 {
     read_data = (struct rt_touch_data *)buf;
 
-    if (s_tp_dowm[id] == 1)
-    {
+    if(s_tp_dowm[id] == 1) {
         read_data[id].event = RT_TOUCH_EVENT_MOVE;
 
     }
-    else
-    {
+    else {
         read_data[id].event = RT_TOUCH_EVENT_DOWN;
         s_tp_dowm[id] = 1;
     }
@@ -218,29 +206,25 @@ static rt_size_t gt911_read_point(struct rt_touch_device *touch, void *buf, rt_s
     cmd[0] = (rt_uint8_t)((GT911_READ_STATUS >> 8) & 0xFF);
     cmd[1] = (rt_uint8_t)(GT911_READ_STATUS & 0xFF);
 
-    if (gt911_read_regs(&gt911_client, cmd, &point_status, 1) != RT_EOK)
-    {
+    if(gt911_read_regs(&gt911_client, cmd, &point_status, 1) != RT_EOK) {
         LOG_D("read point failed\n");
         read_num = 0;
         goto exit_;
     }
 
-    if (point_status == 0)             /* no data */
-    {
+    if(point_status == 0) {            /* no data */
         read_num = 0;
         goto exit_;
     }
 
-    if ((point_status & 0x80) == 0)    /* data is not ready */
-    {
+    if((point_status & 0x80) == 0) {   /* data is not ready */
         read_num = 0;
         goto exit_;
     }
 
     touch_num = point_status & 0x0f;  /* get point num */
 
-    if (touch_num > GT911_MAX_TOUCH) /* point num is not correct */
-    {
+    if(touch_num > GT911_MAX_TOUCH) { /* point num is not correct */
         read_num = 0;
         goto exit_;
     }
@@ -249,30 +233,25 @@ static rt_size_t gt911_read_point(struct rt_touch_device *touch, void *buf, rt_s
     cmd[1] = (rt_uint8_t)(GT911_POINT1_REG & 0xFF);
 
     /* read point num is touch_num */
-    if (gt911_read_regs(&gt911_client, cmd, read_buf, read_num * GT911_POINT_INFO_NUM) != RT_EOK)
-    {
+    if(gt911_read_regs(&gt911_client, cmd, read_buf, read_num * GT911_POINT_INFO_NUM) != RT_EOK) {
         LOG_D("read point failed\n");
         read_num = 0;
         goto exit_;
     }
 
-    if (pre_touch > touch_num)                                      /* point up */
-    {
-        for (read_index = 0; read_index < pre_touch; read_index++)
-        {
+    if(pre_touch > touch_num) {                                     /* point up */
+        for(read_index = 0; read_index < pre_touch; read_index++) {
             rt_uint8_t j;
 
-            for (j = 0; j < touch_num; j++)                          /* this time touch num */
-            {
+            for(j = 0; j < touch_num; j++) {                         /* this time touch num */
                 read_id = read_buf[j * 8] & 0x0F;
 
-                if (read_id > 0) continue;
+                if(read_id > 0) continue;
 
-                if (pre_id[read_index] == read_id)                   /* this id is not free */
+                if(pre_id[read_index] == read_id)                    /* this id is not free */
                     break;
 
-                if (j >= touch_num - 1)
-                {
+                if(j >= touch_num - 1) {
                     rt_uint8_t up_id;
                     up_id = pre_id[read_index];
                     gt911_touch_up(buf, up_id);
@@ -281,16 +260,14 @@ static rt_size_t gt911_read_point(struct rt_touch_device *touch, void *buf, rt_s
         }
     }
 
-    if (touch_num)                                                /* point down */
-    {
+    if(touch_num) {                                               /* point down */
         rt_uint8_t off_set;
 
-        for (read_index = 0; read_index < touch_num; read_index++)
-        {
+        for(read_index = 0; read_index < touch_num; read_index++) {
             off_set = read_index * 8;
             read_id = read_buf[off_set] & 0x0f;
 
-            if (read_id > 0) continue;
+            if(read_id > 0) continue;
 
             pre_id[read_index] = read_id;
             input_x = read_buf[off_set + 1] | (read_buf[off_set + 2] << 8); /* x */
@@ -300,10 +277,8 @@ static rt_size_t gt911_read_point(struct rt_touch_device *touch, void *buf, rt_s
             gt911_touch_down(buf, read_id, input_x, input_y, input_w);
         }
     }
-    else if (pre_touch)
-    {
-        for (read_index = 0; read_index < pre_touch; read_index++)
-        {
+    else if(pre_touch) {
+        for(read_index = 0; read_index < pre_touch; read_index++) {
             gt911_touch_up(buf, pre_id[read_index]);
         }
     }
@@ -321,13 +296,11 @@ exit_:
 
 static rt_err_t gt911_control(struct rt_touch_device *touch, int cmd, void *arg)
 {
-    if (cmd == RT_TOUCH_CTRL_GET_ID)
-    {
+    if(cmd == RT_TOUCH_CTRL_GET_ID) {
         return gt911_get_product_id(&gt911_client, arg, 6);
     }
 
-    if (cmd == RT_TOUCH_CTRL_GET_INFO)
-    {
+    if(cmd == RT_TOUCH_CTRL_GET_INFO) {
         return gt911_get_info(&gt911_client, arg);
     }
 
@@ -336,8 +309,7 @@ static rt_err_t gt911_control(struct rt_touch_device *touch, int cmd, void *arg)
     rt_uint8_t *config;
 
     config = (rt_uint8_t *)rt_calloc(1, sizeof(GT911_CFG_TBL) + GT911_REGITER_LEN);
-    if (config == RT_NULL)
-    {
+    if(config == RT_NULL) {
         LOG_D("malloc config memory failed\n");
         return -RT_ERROR;
     }
@@ -347,64 +319,56 @@ static rt_err_t gt911_control(struct rt_touch_device *touch, int cmd, void *arg)
 
     memcpy(&config[2], GT911_CFG_TBL, sizeof(GT911_CFG_TBL));
 
-    switch (cmd)
-    {
-    case RT_TOUCH_CTRL_SET_X_RANGE:
-    {
-        rt_uint16_t x_range;
+    switch(cmd) {
+        case RT_TOUCH_CTRL_SET_X_RANGE: {
+                rt_uint16_t x_range;
 
-        x_range = *(rt_uint16_t *)arg;
-        config[4] = (rt_uint8_t)(x_range >> 8);
-        config[3] = (rt_uint8_t)(x_range & 0xff);
+                x_range = *(rt_uint16_t *)arg;
+                config[4] = (rt_uint8_t)(x_range >> 8);
+                config[3] = (rt_uint8_t)(x_range & 0xff);
 
-        GT911_CFG_TBL[2] = config[4];
-        GT911_CFG_TBL[1] = config[3];
-        break;
-    }
-    case RT_TOUCH_CTRL_SET_Y_RANGE:
-    {
-        rt_uint16_t y_range;
+                GT911_CFG_TBL[2] = config[4];
+                GT911_CFG_TBL[1] = config[3];
+                break;
+            }
+        case RT_TOUCH_CTRL_SET_Y_RANGE: {
+                rt_uint16_t y_range;
 
-        y_range = *(rt_uint16_t *)arg;
-        config[6] = (rt_uint8_t)(y_range >> 8);
-        config[5] = (rt_uint8_t)(y_range & 0xff);
+                y_range = *(rt_uint16_t *)arg;
+                config[6] = (rt_uint8_t)(y_range >> 8);
+                config[5] = (rt_uint8_t)(y_range & 0xff);
 
-        GT911_CFG_TBL[4] = config[6];
-        GT911_CFG_TBL[3] = config[5];
-        break;
-    }
-    case RT_TOUCH_CTRL_SET_X_TO_Y:
-    {
-        config[8] ^= (1 << 3);
-        break;
-    }
-    case RT_TOUCH_CTRL_SET_MODE:
-    {
-        rt_uint16_t trig_type;
-        trig_type = *(rt_uint16_t *)arg;
+                GT911_CFG_TBL[4] = config[6];
+                GT911_CFG_TBL[3] = config[5];
+                break;
+            }
+        case RT_TOUCH_CTRL_SET_X_TO_Y: {
+                config[8] ^= (1 << 3);
+                break;
+            }
+        case RT_TOUCH_CTRL_SET_MODE: {
+                rt_uint16_t trig_type;
+                trig_type = *(rt_uint16_t *)arg;
 
-        switch (trig_type)
-        {
-        case RT_DEVICE_FLAG_INT_RX:
-            config[8] &= 0xFC;
-            break;
-        case RT_DEVICE_FLAG_RDONLY:
-            config[8] &= 0xFC;
-            config[8] |= 0x02;
-            break;
-        default:
-            break;
-        }
-        break;
-    }
-    default:
-    {
-        break;
-    }
+                switch(trig_type) {
+                    case RT_DEVICE_FLAG_INT_RX:
+                        config[8] &= 0xFC;
+                        break;
+                    case RT_DEVICE_FLAG_RDONLY:
+                        config[8] &= 0xFC;
+                        config[8] |= 0x02;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+        default: {
+                break;
+            }
     }
 
-    if (gt911_write_reg(&gt911_client, config, sizeof(GT911_CFG_TBL) + GT911_ADDR_LEN) != RT_EOK)
-    {
+    if(gt911_write_reg(&gt911_client, config, sizeof(GT911_CFG_TBL) + GT911_ADDR_LEN) != RT_EOK) {
         LOG_D("send config failed");
         return -1;
     }
@@ -413,8 +377,7 @@ static rt_err_t gt911_control(struct rt_touch_device *touch, int cmd, void *arg)
     buf[1] = (rt_uint8_t)(GT911_CHECK_SUM & 0xFF);
     buf[2] = 0;
 
-    for (i = GT911_ADDR_LEN; i < sizeof(GT911_CFG_TBL) + GT911_ADDR_LEN; i++)
-    {
+    for(i = GT911_ADDR_LEN; i < sizeof(GT911_CFG_TBL) + GT911_ADDR_LEN; i++) {
         buf[GT911_ADDR_LEN] += config[i];
     }
 
@@ -427,8 +390,7 @@ static rt_err_t gt911_control(struct rt_touch_device *touch, int cmd, void *arg)
     return RT_EOK;
 }
 
-static struct rt_touch_ops gt911_touch_ops =
-{
+static struct rt_touch_ops gt911_touch_ops = {
     .touch_readpoint = gt911_read_point,
     .touch_control = gt911_control,
 };
@@ -452,8 +414,7 @@ int rt_hw_gt911_init(const char *name, struct rt_touch_config *cfg)
     struct rt_touch_device *touch_device = RT_NULL;
 
     touch_device = (struct rt_touch_device *)rt_malloc(sizeof(struct rt_touch_device));
-    if (touch_device == RT_NULL)
-    {
+    if(touch_device == RT_NULL) {
         LOG_E("touch device malloc fail");
         return -RT_ERROR;
     }
@@ -471,33 +432,29 @@ int rt_hw_gt911_init(const char *name, struct rt_touch_config *cfg)
 
     gt911_client.bus = (struct rt_i2c_bus_device *)rt_device_find(cfg->dev_name);
 
-    if (gt911_client.bus == RT_NULL)
-    {
+    if(gt911_client.bus == RT_NULL) {
         LOG_E("Can't find %s device", cfg->dev_name);
         return -RT_ERROR;
     }
 
-    if (rt_device_open((rt_device_t)gt911_client.bus, RT_DEVICE_FLAG_RDWR) != RT_EOK)
-    {
+    if(rt_device_open((rt_device_t)gt911_client.bus, RT_DEVICE_FLAG_RDWR) != RT_EOK) {
         LOG_E("open %s device failed", cfg->dev_name);
         return -RT_ERROR;
     }
 
     int res;
     res = gt911_i2c_probe(gt911_client.bus, GT911_ADDRESS_LOW);
-    if (res == 1)
-    {
+    if(res == 1) {
         LOG_I("GT911 ADDRESS SET LOW");
         gt911_client.client_addr = GT911_ADDRESS_LOW;
         LOG_I("gt911 id:%x", GT911_ADDRESS_LOW);
     }
-    else
-    {
+    else {
         LOG_I("GT911 ADDRESS SET HIGH");
         gt911_client.client_addr = GT911_ADDRESS_HIGH;
         LOG_I("gt911 id:%x", GT911_ADDRESS_HIGH);
     }
-//    gt911_soft_reset(&gt911_client);
+    //    gt911_soft_reset(&gt911_client);
 
     /* register touch device */
     touch_device->info.type = RT_TOUCH_TYPE_CAPACITANCE;

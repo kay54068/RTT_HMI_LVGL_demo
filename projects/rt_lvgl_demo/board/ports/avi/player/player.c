@@ -19,8 +19,7 @@
 #define __Map(x, in_min, in_max, out_min, out_max) \
     (((x) - (in_min)) * ((out_max) - (out_min)) / ((in_max) - (in_min)) + (out_min))
 
-struct avi_file_info
-{
+struct avi_file_info {
     uint32_t Strsize;
     uint32_t Strtype;
     size_t BytesRD;
@@ -55,17 +54,14 @@ static uint32_t read_video_frame(int fd, uint8_t *buffer, uint32_t length, uint3
 {
     AVI_CHUNK_HEAD head;
     read(fd, &head, sizeof(AVI_CHUNK_HEAD));
-    if (head.FourCC)
-    {
+    if(head.FourCC) {
         /* code */
     }
     *fourcc = head.FourCC;
-    if (head.size % 2)
-    {
+    if(head.size % 2) {
         head.size++;
     }
-    if (length < head.size)
-    {
+    if(length < head.size) {
         rt_kprintf("frame size too large\n");
         return 0;
     }
@@ -83,8 +79,7 @@ static int video_start_parser(player_t player, int fd, char *filename)
 
     avi_file.BytesRD = read(fd, v_pbuffer, 20480);
     ret = AVI_Parser(v_pbuffer, avi_file.BytesRD);
-    if (0 > ret)
-    {
+    if(0 > ret) {
         LOG_E("parse failed (%d)\n", ret);
         return RT_ERROR;
     }
@@ -110,28 +105,22 @@ static void search_files(player_t player, const char *dir_path, const char *ext)
     struct dirent *dirp;
 
     DIR *dir = opendir(dir_path);
-    if (dir == NULL)
-    {
+    if(dir == NULL) {
         LOG_E("open directory error!");
         return;
     }
-    while ((dirp = readdir(dir)))
-    {
-        if (dirp->d_type == DT_DIR)
-        {
-            if (rt_strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0)
-            {
+    while((dirp = readdir(dir))) {
+        if(dirp->d_type == DT_DIR) {
+            if(rt_strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0) {
                 continue;
             }
             char subdir_path[64];
             rt_snprintf(subdir_path, sizeof(subdir_path), "%s/%s", dir_path, dirp->d_name);
             search_files(player, subdir_path, ext);
         }
-        else
-        {
+        else {
             char *file_ext = strrchr(dirp->d_name, '.');
-            if (file_ext != NULL && strcmp(file_ext, ext) == 0)
-            {
+            if(file_ext != NULL && strcmp(file_ext, ext) == 0) {
                 char file_path[64];
                 rt_snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, dirp->d_name);
                 LOG_I("%s\n", file_path);
@@ -149,34 +138,28 @@ static uint8_t add_video_player(player_t player)
 {
     uint8_t video_index = 0;
 
-    if (player->video_num == 0)
-    {
+    if(player->video_num == 0) {
         player->video_list[player->song_current] = rt_strdup(player->video_name);
         LOG_I("Add first res to player list:%s", player->video_list[player->song_current]);
         player->song_current ++;
         player->video_num++;
     }
-    else
-    {
+    else {
         rt_bool_t flag = RT_FALSE;
         /* find in list*/
-        for (int index = 0; index < player->video_num; index++)
-        {
+        for(int index = 0; index < player->video_num; index++) {
             char *video_name = player->video_list[index];
-            if (rt_strcmp(player->video_name, video_name))
-            {
+            if(rt_strcmp(player->video_name, video_name)) {
                 flag = RT_TRUE;
             }
-            else
-            {
+            else {
                 flag = RT_FALSE;
                 video_index = index;
                 LOG_I("Find name to the list,index:%d", video_index);
                 break;
             }
         }
-        if (flag)
-        {
+        if(flag) {
             player->video_list[player->song_current] = rt_strdup(player->video_name);
             LOG_I("Add [%s] to player list", player->video_list[player->song_current]);
             player->song_current ++;
@@ -199,18 +182,15 @@ int player_show(player_t player)
     rt_kprintf("*********** video Player ***********\n");
 
     /* print now video */
-    for (i = 0; i < player->video_num; i++)
-    {
+    for(i = 0; i < player->video_num; i++) {
         rt_kprintf("%02d. %s\n", i + 1, (char *)player->video_list[i]);
     }
 
     /* print now player status */
-    if (PLAYER_RUNNING == player->status)
-    {
+    if(PLAYER_RUNNING == player->status) {
         rt_kprintf("<---  current player:");
     }
-    else
-    {
+    else {
         rt_kprintf("<---  stop player:");
     }
 
@@ -230,8 +210,7 @@ static int player_init(player_t player)
 {
     rt_uint32_t level;
 
-    if (player->status != PLAYER_RUNNING)
-    {
+    if(player->status != PLAYER_RUNNING) {
         level = rt_hw_interrupt_disable();
 
         player->status = PLAYER_READY;
@@ -250,8 +229,7 @@ static int player_play(player_t player)
 {
     rt_uint32_t level;
 
-    if (player->status != PLAYER_RUNNING)
-    {
+    if(player->status != PLAYER_RUNNING) {
         level = rt_hw_interrupt_disable();
 
         player->status = PLAYER_RUNNING;
@@ -268,8 +246,7 @@ static int player_stop(player_t player)
 {
     rt_uint32_t level;
 
-    if (player->status == PLAYER_RUNNING)
-    {
+    if(player->status == PLAYER_RUNNING) {
         level = rt_hw_interrupt_disable();
 
         player->status = PLAYER_STOP;
@@ -284,8 +261,7 @@ int player_delete(player_t player)
 {
     rt_uint32_t level;
 
-    if (player->status == PLAYER_RUNNING)
-    {
+    if(player->status == PLAYER_RUNNING) {
         level = rt_hw_interrupt_disable();
 
         player->status = PLAYER_DELETE;
@@ -302,12 +278,10 @@ static int player_last(player_t player)
 
     level = rt_hw_interrupt_disable();
 
-    if (player->song_current > 1)
-    {
+    if(player->song_current > 1) {
         player->song_current --;
     }
-    else
-    {
+    else {
         player->song_current = player->video_num;
     }
 
@@ -328,12 +302,10 @@ static int player_next(player_t player)
 
     level = rt_hw_interrupt_disable();
 
-    if (player->song_current < player->video_num)
-    {
+    if(player->song_current < player->video_num) {
         player->song_current ++;
     }
-    else
-    {
+    else {
         player->song_current = 1;
     }
 
@@ -352,38 +324,37 @@ int player_control(player_t player, int cmd, void *arg)
 {
     rt_uint32_t level;
 
-    switch (cmd)
-    {
-    case PLAYER_CMD_INIT:
-        LOG_I("Rec res name:%s len:%d", (char *)arg, rt_strlen(arg));
-        rt_memset(player->video_name, 0x00, rt_strlen(arg));
-        rt_strcpy(player->video_name, arg);
-        player_init(player);
-        break;
-    case PLAYER_CMD_PLAY:
-        player_play(player);
-        break;
-    case PLAYER_CMD_STOP:
-        player_stop(player);
-        break;
-    case PLAYER_CMD_LAST:
-        player_last(player);
-        break;
-    case PLAYER_CMD_NEXT:
-        player_next(player);
-        break;
-    case PLAYER_CMD_SET_VOL:
-        level = rt_hw_interrupt_disable();
-        player->volume = *(int16_t *)arg;
-        rt_hw_interrupt_enable(level);
-        pwm_audio_set_volume(player->volume);
-        break;
-    case PLAYER_CMD_GET_VOL:
-        *(uint8_t *)arg = player->volume;
-        break;
-    case PLAYER_CMD_GET_STATUS:
-        *(uint8_t *)arg = player->status;
-        break;
+    switch(cmd) {
+        case PLAYER_CMD_INIT:
+            LOG_I("Rec res name:%s len:%d", (char *)arg, rt_strlen(arg));
+            rt_memset(player->video_name, 0x00, rt_strlen(arg));
+            rt_strcpy(player->video_name, arg);
+            player_init(player);
+            break;
+        case PLAYER_CMD_PLAY:
+            player_play(player);
+            break;
+        case PLAYER_CMD_STOP:
+            player_stop(player);
+            break;
+        case PLAYER_CMD_LAST:
+            player_last(player);
+            break;
+        case PLAYER_CMD_NEXT:
+            player_next(player);
+            break;
+        case PLAYER_CMD_SET_VOL:
+            level = rt_hw_interrupt_disable();
+            player->volume = *(int16_t *)arg;
+            rt_hw_interrupt_enable(level);
+            pwm_audio_set_volume(player->volume);
+            break;
+        case PLAYER_CMD_GET_VOL:
+            *(uint8_t *)arg = player->volume;
+            break;
+        case PLAYER_CMD_GET_STATUS:
+            *(uint8_t *)arg = player->status;
+            break;
     }
     return 0;
 }
@@ -394,31 +365,25 @@ static void player_entry(void *parameter)
     int32_t process;
     player_t player = (player_t)parameter;
 
-    while (1)
-    {
-        if (player->status == PLAYER_READY)
-        {
+    while(1) {
+        if(player->status == PLAYER_READY) {
             fd = video_start_parser(player, fd, player->video_list[player->song_current - 1]);
             LOG_I("Player:%s ready decode\n", player->video_list[player->song_current - 1]);
 
             player->status = PLAYER_RUNNING;
         }
-        if (player->status == PLAYER_RUNNING)
-        {
+        if(player->status == PLAYER_RUNNING) {
             avi_file.cur_time = ((float)avi_file.BytesRD / AVI_file.movi_size) * avi_file.alltime;
 
-            if (avi_file.Strtype == T_vids)
-            {
+            if(avi_file.Strtype == T_vids) {
                 JPEG_Draw_frame(player->decode, v_pbuffer, 0x00, 0x00);
             }
             /* audio output */
-            else if (avi_file.Strtype == T_auds)
-            {
+            else if(avi_file.Strtype == T_auds) {
                 size_t cnt;
                 pwm_audio_write((uint8_t *)v_pbuffer, avi_file.Strsize, &cnt, 500);
             }
-            else
-            {
+            else {
                 LOG_E("Unknow frame\n");
                 break;
             }
@@ -432,15 +397,13 @@ static void player_entry(void *parameter)
             set_audio_wave_value(process);
 
             /* if video was play over,play next video */
-            if (avi_file.BytesRD >= AVI_file.movi_size)
-            {
+            if(avi_file.BytesRD >= AVI_file.movi_size) {
                 set_audio_wave_value(0);
                 player_show(player);
                 player_next(player);
             }
         }
-        if (player->status == PLAYER_STOP)
-        {
+        if(player->status == PLAYER_STOP) {
             LOG_I("Stop player");
 
             pwm_audio_stop();
@@ -449,29 +412,25 @@ static void player_entry(void *parameter)
 
             pwm_audio_start();
         }
-        if (player->status == PLAYER_DELETE)
-        {
+        if(player->status == PLAYER_DELETE) {
             close(fd);
             pwm_audio_deinit();
             player->status = PLAYER_IDLE;
             LOG_I("Free %s resources", player->video_list[player->song_current - 1]);
         }
-        if (player->status == PLAYER_LAST)
-        {
+        if(player->status == PLAYER_LAST) {
             close(fd);
             pwm_audio_deinit();
             player->status = PLAYER_READY;
             LOG_I("Free %s resources", player->video_list[player->song_current - 1]);
         }
-        if (player->status == PLAYER_NEXT)
-        {
+        if(player->status == PLAYER_NEXT) {
             close(fd);
             pwm_audio_deinit();
             player->status = PLAYER_READY;
             LOG_I("Free %s resources", player->video_list[player->song_current - 1]);
         }
-        if (player->status == PLAYER_IDLE)
-        {
+        if(player->status == PLAYER_IDLE) {
             rt_sem_take(player->sem_play, RT_WAITING_FOREVER);
         }
     }
@@ -481,8 +440,7 @@ int player_start(player_t player)
 {
     static rt_uint8_t inited = 0;
 
-    if (inited == 1)
-    {
+    if(inited == 1) {
         return -RT_ERROR;
     }
 
@@ -499,20 +457,17 @@ int player_start(player_t player)
     player->song_time_pass = 0;
 
     player->sem_play = rt_sem_create("sem_play", 0, RT_IPC_FLAG_FIFO);
-    if (player->sem_play == RT_NULL)
-    {
+    if(player->sem_play == RT_NULL) {
         return -RT_ERROR;
     }
 
     player->play_thread = rt_thread_create("player",
                                            player_entry, player,
                                            2 * 1024, 18, 20);
-    if (player->play_thread != RT_NULL)
-    {
+    if(player->play_thread != RT_NULL) {
         rt_thread_startup(player->play_thread);
     }
-    else
-    {
+    else {
         rt_sem_delete(player->sem_play);
         return -RT_ERROR;
     }

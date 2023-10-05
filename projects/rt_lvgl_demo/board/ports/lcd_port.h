@@ -15,8 +15,7 @@
 #include <rtdevice.h>
 #include <board.h>
 
-typedef enum
-{
+typedef enum {
     ROTATION_ZERO = 0,
     ROTATION_090 = 90,
     ROTATION_180 = 180,

@@ -6,13 +6,12 @@
 /**
  * @brief Configuration parameters of pwm audio for pwm_audio_init function
  */
-typedef struct
-{
+typedef struct {
     int gpio_num_left;                  /*!< the LEDC output gpio_num, Left channel */
     int gpio_num_right;                 /*!< the LEDC output gpio_num, Right channel */
-//    ledc_channel_t ledc_channel_left;   /*!< LEDC channel (0 - 7), Corresponding to left channel*/
-//    ledc_channel_t ledc_channel_right;  /*!< LEDC channel (0 - 7), Corresponding to right channel*/
-//    ledc_timer_t ledc_timer_sel;        /*!< Select the timer source of channel (0 - 3) */
+    //    ledc_channel_t ledc_channel_left;   /*!< LEDC channel (0 - 7), Corresponding to left channel*/
+    //    ledc_channel_t ledc_channel_right;  /*!< LEDC channel (0 - 7), Corresponding to right channel*/
+    //    ledc_timer_t ledc_timer_sel;        /*!< Select the timer source of channel (0 - 3) */
     uint8_t duty_resolution;            /*!< ledc pwm bits */
     uint32_t ringbuf_len;               /*!< ringbuffer size */
 
@@ -21,8 +20,7 @@ typedef struct
 /**
  * @brief pwm audio status
  */
-typedef enum
-{
+typedef enum {
     PWM_AUDIO_STATUS_UN_INIT = 0, /*!< PWM ?????? */
     PWM_AUDIO_STATUS_IDLE = 1, /*!< pwm audio idle */
     PWM_AUDIO_STATUS_BUSY = 2, /*!< pwm audio busy */

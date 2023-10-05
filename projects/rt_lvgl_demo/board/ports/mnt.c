@@ -23,22 +23,18 @@ static void _sdcard_mount(void)
 
     device = rt_device_find("sd");
     rt_kprintf("rt_device_find %x \r\n", device);
-    if (device == NULL)
-    {
+    if(device == NULL) {
         mmcsd_wait_cd_changed(0);
         sdcard_change();
         mmcsd_wait_cd_changed(RT_WAITING_FOREVER);
         device = rt_device_find("sd");
     }
 
-    if (device != RT_NULL)
-    {
-        if (dfs_mount("sd", "/", "elm", 0, 0) == RT_EOK)
-        {
+    if(device != RT_NULL) {
+        if(dfs_mount("sd", "/", "elm", 0, 0) == RT_EOK) {
             LOG_I("sd card mount to '/'");
         }
-        else
-        {
+        else {
             LOG_W("sd card mount to '/' failed!");
         }
     }
@@ -60,22 +56,18 @@ static void sd_auto_mount(void *parameter)
     rt_uint8_t re_sd_check_pin = 1;
     rt_thread_mdelay(20);
 
-    if (!(re_sd_check_pin = rt_pin_read(sd_check_pin)))
-    {
+    if(!(re_sd_check_pin = rt_pin_read(sd_check_pin))) {
         _sdcard_mount();
     }
 
-    while (1)
-    {
+    while(1) {
         rt_thread_mdelay(200);
 
-        if (re_sd_check_pin && (re_sd_check_pin = rt_pin_read(sd_check_pin)) == 0)
-        {
+        if(re_sd_check_pin && (re_sd_check_pin = rt_pin_read(sd_check_pin)) == 0) {
             _sdcard_mount();
         }
 
-        if (!re_sd_check_pin && (re_sd_check_pin = rt_pin_read(sd_check_pin)) != 0)
-        {
+        if(!re_sd_check_pin && (re_sd_check_pin = rt_pin_read(sd_check_pin)) != 0) {
             _sdcard_unmount();
         }
     }
@@ -90,12 +82,10 @@ static void sd_mount(void)
 
     tid = rt_thread_create("sd_mount", sd_auto_mount, RT_NULL,
                            2048, RT_THREAD_PRIORITY_MAX - 2, 20);
-    if (tid != RT_NULL)
-    {
+    if(tid != RT_NULL) {
         rt_thread_startup(tid);
     }
-    else
-    {
+    else {
         LOG_E("create sd_mount thread err!");
         return;
     }
@@ -109,12 +99,10 @@ int sd_mount(void)
     uint32_t cs_pin = BSP_IO_PORT_06_PIN_11;
     rt_hw_sci_spi_device_attach("scpi7", "scpi70", cs_pin);
     msd_init("sd0", "scpi70");
-    if (dfs_mount("sd0", "/", "elm", 0, 0) == 0)
-    {
+    if(dfs_mount("sd0", "/", "elm", 0, 0) == 0) {
         LOG_I("Mount \"/dev/sd0\" on \"/\"\n");
     }
-    else
-    {
+    else {
         LOG_W("sd card mount to '/' failed!");
     }
     return 0;

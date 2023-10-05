@@ -22,11 +22,9 @@ static int search_fourcc(uint32_t fourcc, const uint8_t *buffer, uint32_t length
     uint32_t *pdata;
     j = length - 4;
     rt_kprintf("movi index:%d\n\n", j);
-    for (i = 0; i < j; i++)
-    {
+    for(i = 0; i < j; i++) {
         pdata = (uint32_t *)(buffer + i);
-        if (fourcc == *pdata)
-        {
+        if(fourcc == *pdata) {
             rt_kprintf("==>find movi:%#x,%d\n", pdata, i);
             return i;
         }
@@ -42,8 +40,7 @@ static int Strl_Parser(const uint8_t *buffer, uint32_t length, uint32_t *list_le
     const uint8_t *pdata = buffer;
     // strl(stream list), include "strh" and "strf"
     AVI_LIST_HEAD *strl = (AVI_LIST_HEAD *)pdata;
-    if (strl->List != LIST_ID || strl->FourCC != strl_ID)
-    {
+    if(strl->List != LIST_ID || strl->FourCC != strl_ID) {
         return -1;
     }
     pdata += sizeof(AVI_LIST_HEAD);
@@ -51,8 +48,7 @@ static int Strl_Parser(const uint8_t *buffer, uint32_t length, uint32_t *list_le
 
     // strh
     AVI_STRH_CHUNK *strh = (AVI_STRH_CHUNK *)pdata;
-    if (strh->FourCC != strh_ID || strh->size + 8 != sizeof(AVI_STRH_CHUNK))
-    {
+    if(strh->FourCC != strh_ID || strh->size + 8 != sizeof(AVI_STRH_CHUNK)) {
         return -5;
     }
 #ifdef DEBUGINFO
@@ -77,17 +73,14 @@ static int Strl_Parser(const uint8_t *buffer, uint32_t length, uint32_t *list_le
 #endif
     pdata += sizeof(AVI_STRH_CHUNK);
 
-    if (vids_ID == strh->fourcc_type)
-    {
+    if(vids_ID == strh->fourcc_type) {
         rt_kprintf("Find a video stream\n");
-        if (mjpg_ID != strh->fourcc_codec)
-        {
+        if(mjpg_ID != strh->fourcc_codec) {
             rt_kprintf("only support mjpeg decoder, but needed is 0x%x\n", strh->fourcc_codec);
             return -1;
         }
         AVI_VIDS_STRF_CHUNK *strf = (AVI_VIDS_STRF_CHUNK *)pdata;
-        if (strf->FourCC != strf_ID || strf->size + 8 != sizeof(AVI_VIDS_STRF_CHUNK))
-        {
+        if(strf->FourCC != strf_ID || strf->size + 8 != sizeof(AVI_VIDS_STRF_CHUNK)) {
             return -5;
         }
 #ifdef DEBUGINFO
@@ -110,12 +103,11 @@ static int Strl_Parser(const uint8_t *buffer, uint32_t length, uint32_t *list_le
         pdata += sizeof(AVI_VIDS_STRF_CHUNK);
 
     }
-    else if (auds_ID == strh->fourcc_type)
-    {
+    else if(auds_ID == strh->fourcc_type) {
         rt_kprintf("Find a audio stream\n");
         AVI_AUDS_STRF_CHUNK *strf = (AVI_AUDS_STRF_CHUNK *)pdata;
-        if (strf->FourCC != strf_ID || (strf->size + 8 != sizeof(AVI_AUDS_STRF_CHUNK) && strf->size + 10 != sizeof(AVI_AUDS_STRF_CHUNK)))
-        {
+        if(strf->FourCC != strf_ID || (strf->size + 8 != sizeof(AVI_AUDS_STRF_CHUNK) &&
+                                       strf->size + 10 != sizeof(AVI_AUDS_STRF_CHUNK))) {
             rt_kprintf("FourCC=0x%x|%x, size=%d|%d\n", strf->FourCC, strf_ID, strf->size, sizeof(AVI_AUDS_STRF_CHUNK));
             return -5;
         }
@@ -134,8 +126,7 @@ static int Strl_Parser(const uint8_t *buffer, uint32_t length, uint32_t *list_le
         AVI_file.auds_bits = strf->bits_per_sample;
         pdata += sizeof(AVI_AUDS_STRF_CHUNK);
     }
-    else
-    {
+    else {
         rt_kprintf("Unsupport stream 0x%x\n", strh->fourcc_type);
     }
     return 0;
@@ -145,16 +136,14 @@ int AVI_Parser(const uint8_t *buffer, uint32_t length)
 {
     const uint8_t *pdata = buffer;
     AVI_LIST_HEAD *riff = (AVI_LIST_HEAD *)pdata;
-    if (riff->List != RIFF_ID || riff->FourCC != AVI_ID)
-    {
+    if(riff->List != RIFF_ID || riff->FourCC != AVI_ID) {
         return -1;
     }
     AVI_file.RIFFchunksize = riff->size; //RIFF数据块长度
     pdata += sizeof(AVI_LIST_HEAD);
 
     AVI_LIST_HEAD *list = (AVI_LIST_HEAD *)pdata;
-    if (list->List != LIST_ID || list->FourCC != hdrl_ID)
-    {
+    if(list->List != LIST_ID || list->FourCC != hdrl_ID) {
         return -3;
     }
     AVI_file.LISTchunksize = list->size; //LIST数据块长度
@@ -162,8 +151,7 @@ int AVI_Parser(const uint8_t *buffer, uint32_t length)
 
     // avih chunk
     AVI_AVIH_CHUNK *avih = (AVI_AVIH_CHUNK *)pdata;
-    if (avih->FourCC != avih_ID || avih->size + 8 != sizeof(AVI_AVIH_CHUNK))
-    {
+    if(avih->FourCC != avih_ID || avih->size + 8 != sizeof(AVI_AVIH_CHUNK)) {
         return -5;
     }
     AVI_file.avihsize = avih->size; //avih数据块长度
@@ -184,20 +172,17 @@ int AVI_Parser(const uint8_t *buffer, uint32_t length)
     rt_kprintf("主窗口宽度:%d\r\n", avih->width);
     rt_kprintf("主窗口高度:%d\r\n\n", avih->height);
 #endif
-    if ((avih->width > 800) || (avih->height > 480))
-    {
+    if((avih->width > 800) || (avih->height > 480)) {
         rt_kprintf("The size of video is too large\n");
         return -6;    //视频尺寸不支持
     }
     pdata += sizeof(AVI_AVIH_CHUNK);
 
     // process all streams in turn
-    for (size_t i = 0; i < avih->streams; i++)
-    {
+    for(size_t i = 0; i < avih->streams; i++) {
         uint32_t strl_size = 0;
         int ret = Strl_Parser(pdata, length - (pdata - buffer), &strl_size);
-        if (0 > ret)
-        {
+        if(0 > ret) {
             rt_kprintf("strl of stream%d prase failed\n", i);
             break;
             /**
@@ -209,16 +194,14 @@ int AVI_Parser(const uint8_t *buffer, uint32_t length)
 
     rt_kprintf("MAKE_FOURCC:%d\n\n", MAKE_FOURCC('m', 'o', 'v', 'i'));
     int movi_offset = search_fourcc(MAKE_FOURCC('m', 'o', 'v', 'i'), pdata, length - (pdata - buffer));
-    if (0 > movi_offset)
-    {
+    if(0 > movi_offset) {
         rt_kprintf("can't find \"movi\" list\n");
         return -7;
     }
     AVI_file.movi_start = movi_offset + 4  + pdata - buffer;
     pdata += movi_offset - 8; // back to the list head
     AVI_LIST_HEAD *movi = (AVI_LIST_HEAD *)pdata;
-    if (movi->List != LIST_ID || movi->FourCC != movi_ID)
-    {
+    if(movi->List != LIST_ID || movi->FourCC != movi_ID) {
         return -8;
     }
     AVI_file.movi_size = movi->size; //LIST数据块长度

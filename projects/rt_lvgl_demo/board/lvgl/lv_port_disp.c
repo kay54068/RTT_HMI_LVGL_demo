@@ -66,13 +66,13 @@ static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_
     y2 = area->y2;
 
     /*Return if the area is out the screen*/
-    if (x2 < 0)
+    if(x2 < 0)
         return;
-    if (y2 < 0)
+    if(y2 < 0)
         return;
-    if (x1 > info.width - 1)
+    if(x1 > info.width - 1)
         return;
-    if (y1 > info.height - 1)
+    if(y1 > info.height - 1)
         return;
 
     /*Truncate the area to the screen*/
@@ -88,10 +88,8 @@ static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_
     /* color_p is a buffer pointer; the buffer is provided by LVGL */
     lv_color16_t *fbp16 = (lv_color16_t *)info.framebuffer;
 
-    for (y = act_y1; y <= act_y2; y++)
-    {
-        for (x = act_x1; x <= act_x2; x++)
-        {
+    for(y = act_y1; y <= act_y2; y++) {
+        for(x = act_x1; x <= act_x2; x++) {
             location = (x) + (y) * info.width;
             color_to16_maybe(&fbp16[location], color_p);
             color_p++;
@@ -113,8 +111,7 @@ void lv_port_disp_init(void)
     device = rt_device_find("lcd");
     RT_ASSERT(device != RT_NULL);
 
-    if (rt_device_open(device, RT_DEVICE_OFLAG_RDWR) == RT_EOK)
-    {
+    if(rt_device_open(device, RT_DEVICE_OFLAG_RDWR) == RT_EOK) {
         rt_device_control(device, RTGRAPHIC_CTRL_GET_INFO, &info);
     }
 

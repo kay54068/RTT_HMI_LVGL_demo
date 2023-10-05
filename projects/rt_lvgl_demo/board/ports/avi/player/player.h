@@ -20,8 +20,7 @@
 #define PLAYER_SONG_NUM_MAX          20
 #define PLAYER_SONG_NAME_LEN_MAX     32
 
-enum PLAYER_STATUS
-{
+enum PLAYER_STATUS {
     PLAYER_IDLE,
     PLAYER_READY,
     PLAYER_RUNNING,
@@ -30,8 +29,7 @@ enum PLAYER_STATUS
     PLAYER_LAST,
     PLAYER_NEXT,
 };
-enum PLAYER_CMD
-{
+enum PLAYER_CMD {
     PLAYER_CMD_INIT,
     PLAYER_CMD_PLAY,
     PLAYER_CMD_STOP,
@@ -41,18 +39,15 @@ enum PLAYER_CMD
     PLAYER_CMD_GET_VOL,
     PLAYER_CMD_GET_STATUS
 };
-enum AUDIO_OPS_CMD
-{
+enum AUDIO_OPS_CMD {
     AUDIO_OPS_CMD_SET_VOL
 };
-enum DECODE_OPS_CMD
-{
+enum DECODE_OPS_CMD {
     DECODE_OPS_CMD_GET_NAME,
     DECODE_OPS_CMD_GET_LEN
 };
 
-struct audio_ops
-{
+struct audio_ops {
     int (*init)(void);
     int (*open)(void);
     int (*close)(void);
@@ -60,15 +55,14 @@ struct audio_ops
     int (*write)(void *buffer, int size);
 };
 
-struct player
-{
+struct player {
     enum PLAYER_STATUS  status;             /*state*/
     int16_t             volume;             /*Sound Size*/
     uint8_t             song_current;       /*Playing video*/
     uint8_t             video_num;          /*Total number of videos*/
     uint16_t            song_time_pass;     /*Played time*/
     uint16_t            song_time_all;      /*Played all time*/
-    char  *             video_list[PLAYER_SONG_NUM_MAX];
+    char               *video_list[PLAYER_SONG_NUM_MAX];
     char                video_name[PLAYER_SONG_NAME_LEN_MAX];
 
     rt_sem_t            sem_play;

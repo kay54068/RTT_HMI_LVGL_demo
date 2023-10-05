@@ -7,55 +7,55 @@
 
 void _ui_bar_set_property(lv_obj_t *target, int id, int val)
 {
-    if (id == _UI_BAR_PROPERTY_VALUE_WITH_ANIM)
+    if(id == _UI_BAR_PROPERTY_VALUE_WITH_ANIM)
         lv_bar_set_value(target, val, LV_ANIM_ON);
-    if (id == _UI_BAR_PROPERTY_VALUE)
+    if(id == _UI_BAR_PROPERTY_VALUE)
         lv_bar_set_value(target, val, LV_ANIM_OFF);
 }
 
 void _ui_basic_set_property(lv_obj_t *target, int id, int val)
 {
-    if (id == _UI_BASIC_PROPERTY_POSITION_X)
+    if(id == _UI_BASIC_PROPERTY_POSITION_X)
         lv_obj_set_x(target, val);
-    if (id == _UI_BASIC_PROPERTY_POSITION_Y)
+    if(id == _UI_BASIC_PROPERTY_POSITION_Y)
         lv_obj_set_y(target, val);
-    if (id == _UI_BASIC_PROPERTY_WIDTH)
+    if(id == _UI_BASIC_PROPERTY_WIDTH)
         lv_obj_set_width(target, val);
-    if (id == _UI_BASIC_PROPERTY_HEIGHT)
+    if(id == _UI_BASIC_PROPERTY_HEIGHT)
         lv_obj_set_height(target, val);
 }
 
 void _ui_dropdown_set_property(lv_obj_t *target, int id, int val)
 {
-    if (id == _UI_DROPDOWN_PROPERTY_SELECTED)
+    if(id == _UI_DROPDOWN_PROPERTY_SELECTED)
         lv_dropdown_set_selected(target, val);
 }
 
 void _ui_image_set_property(lv_obj_t *target, int id, uint8_t *val)
 {
-    if (id == _UI_IMAGE_PROPERTY_IMAGE)
+    if(id == _UI_IMAGE_PROPERTY_IMAGE)
         lv_img_set_src(target, val);
 }
 
 void _ui_label_set_property(lv_obj_t *target, int id, char *val)
 {
-    if (id == _UI_LABEL_PROPERTY_TEXT)
+    if(id == _UI_LABEL_PROPERTY_TEXT)
         lv_label_set_text(target, val);
 }
 
 void _ui_roller_set_property(lv_obj_t *target, int id, int val)
 {
-    if (id == _UI_ROLLER_PROPERTY_SELECTED_WITH_ANIM)
+    if(id == _UI_ROLLER_PROPERTY_SELECTED_WITH_ANIM)
         lv_roller_set_selected(target, val, LV_ANIM_ON);
-    if (id == _UI_ROLLER_PROPERTY_SELECTED)
+    if(id == _UI_ROLLER_PROPERTY_SELECTED)
         lv_roller_set_selected(target, val, LV_ANIM_OFF);
 }
 
 void _ui_slider_set_property(lv_obj_t *target, int id, int val)
 {
-    if (id == _UI_SLIDER_PROPERTY_VALUE_WITH_ANIM)
+    if(id == _UI_SLIDER_PROPERTY_VALUE_WITH_ANIM)
         lv_slider_set_value(target, val, LV_ANIM_ON);
-    if (id == _UI_SLIDER_PROPERTY_VALUE)
+    if(id == _UI_SLIDER_PROPERTY_VALUE)
         lv_slider_set_value(target, val, LV_ANIM_OFF);
 }
 
@@ -91,28 +91,26 @@ void _ui_keyboard_set_target(lv_obj_t *keyboard, lv_obj_t *textarea)
 
 void _ui_flag_modify(lv_obj_t *target, int32_t flag, int value)
 {
-    if (value == _UI_MODIFY_FLAG_TOGGLE)
-    {
-        if (lv_obj_has_flag(target, flag))
+    if(value == _UI_MODIFY_FLAG_TOGGLE) {
+        if(lv_obj_has_flag(target, flag))
             lv_obj_clear_flag(target, flag);
         else
             lv_obj_add_flag(target, flag);
     }
-    else if (value == _UI_MODIFY_FLAG_ADD)
+    else if(value == _UI_MODIFY_FLAG_ADD)
         lv_obj_add_flag(target, flag);
     else
         lv_obj_clear_flag(target, flag);
 }
 void _ui_state_modify(lv_obj_t *target, int32_t state, int value)
 {
-    if (value == _UI_MODIFY_STATE_TOGGLE)
-    {
-        if (lv_obj_has_state(target, state))
+    if(value == _UI_MODIFY_STATE_TOGGLE) {
+        if(lv_obj_has_state(target, state))
             lv_obj_clear_state(target, state);
         else
             lv_obj_add_state(target, state);
     }
-    else if (value == _UI_MODIFY_STATE_ADD)
+    else if(value == _UI_MODIFY_STATE_ADD)
         lv_obj_add_state(target, state);
     else
         lv_obj_clear_state(target, state);
@@ -208,7 +206,7 @@ void _ui_slider_set_text_value(lv_obj_t *trg, lv_obj_t *src, char *prefix, char 
 }
 void _ui_checked_set_text_value(lv_obj_t *trg, lv_obj_t *src, char *txt_on, char *txt_off)
 {
-    if (lv_obj_has_state(src, LV_STATE_CHECKED))
+    if(lv_obj_has_state(src, LV_STATE_CHECKED))
         lv_label_set_text(trg, txt_on);
     else
         lv_label_set_text(trg, txt_off);

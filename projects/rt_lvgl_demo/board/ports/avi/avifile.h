@@ -33,8 +33,7 @@
 #define vids_ID     _REV(0x76696473)
 #define auds_ID     _REV(0x61756473)
 
-typedef struct
-{
+typedef struct {
     uint32_t  RIFFchunksize;
     uint32_t  LISTchunksize;
     uint32_t  avihsize;
@@ -57,7 +56,7 @@ typedef struct
 
 #define  MAKEWORD(ptr)  (uint32_t)(((uint32_t)*((uint8_t*)(ptr))<<8)|(uint32_t)*(uint8_t*)((ptr)+1))
 #define  MAKEuint32_t(ptr)  (uint32_t)(((uint32_t)*(uint8_t*)(ptr)|(((uint32_t)*(uint8_t*)(ptr+1))<<8)|\
-                        (((uint32_t)*(uint8_t*)(ptr+2))<<16)|(((uint32_t)*(uint8_t*)(ptr+3))<<24)))
+                                        (((uint32_t)*(uint8_t*)(ptr+2))<<16)|(((uint32_t)*(uint8_t*)(ptr+3))<<24)))
 
 
 int AVI_Parser(const uint8_t *buffer, uint32_t length);

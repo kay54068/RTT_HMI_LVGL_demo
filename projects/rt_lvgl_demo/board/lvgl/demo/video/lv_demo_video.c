@@ -36,8 +36,7 @@ lv_obj_t *ui_Audio_Wave;
 static decode_drv_t decode;
 static uint8_t *jpeg_outbuffer;
 
-const lv_obj_class_t lv_media_class =
-{
+const lv_obj_class_t lv_media_class = {
     .width_def = LV_SIZE_CONTENT,
     .height_def = LV_SIZE_CONTENT,
     .instance_size = sizeof(lv_media_obj_t),
@@ -74,10 +73,9 @@ void lv_media_set_fn(lv_obj_t *obj, char *fn)
 
     uint16_t fn_len = strlen(fn);
 
-    if ((!fn) || (fn_len == 0)) return;
+    if((!fn) || (fn_len == 0)) return;
 
-    if (fd->cur_fn)
-    {
+    if(fd->cur_fn) {
         lv_mem_free(fd->cur_fn);
         fd->cur_fn = NULL;
     }
@@ -85,7 +83,7 @@ void lv_media_set_fn(lv_obj_t *obj, char *fn)
     fd->cur_fn = lv_mem_alloc(fn_len + 1);
     LV_ASSERT_MALLOC(fd->cur_fn);
 
-    if (fd->cur_fn == NULL) return;
+    if(fd->cur_fn == NULL) return;
     strcpy(fd->cur_fn, fn);
 }
 
@@ -104,22 +102,20 @@ static void file_explorer_event_cb(lv_event_t *e)
     lv_obj_t *file_explorer = lv_event_get_target(e);
     lv_obj_t *file = lv_event_get_user_data(e);
 
-    if (code == LV_EVENT_VALUE_CHANGED)
-    {
+    if(code == LV_EVENT_VALUE_CHANGED) {
         const char *path = lv_file_explorer_get_current_path(file_explorer);
         const char *fn = lv_file_explorer_get_selected_file_name(file_explorer);
 
         uint16_t path_len = strlen(path);
         uint16_t fn_len = strlen(fn);
 
-        if ((path_len + fn_len) <= LV_FILE_EXPLORER_PATH_MAX_LEN)
-        {
+        if((path_len + fn_len) <= LV_FILE_EXPLORER_PATH_MAX_LEN) {
             char sel_fn[LV_FILE_EXPLORER_PATH_MAX_LEN];
 
             strcpy(sel_fn, path);
             strcat(sel_fn, fn);
 
-            if (strstr(sel_fn, ".avi") == NULL)
+            if(strstr(sel_fn, ".avi") == NULL)
                 return;
 
             lv_media_set_fn(file, sel_fn);
@@ -145,10 +141,8 @@ void Button_event(lv_event_t *e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
 
-    if (target == file_ImgButton)
-    {
-        if (event_code == LV_EVENT_RELEASED)
-        {
+    if(target == file_ImgButton) {
+        if(event_code == LV_EVENT_RELEASED) {
             btn_state_change = !btn_state_change;
 
             btn_state_change == LV_FILE_EXPLORER_OPEN ?         \
@@ -158,10 +152,8 @@ void Button_event(lv_event_t *e)
         }
     }
     // pause
-    if (target == ui_ImgButton2)
-    {
-        if (event_code == LV_EVENT_RELEASED)
-        {
+    if(target == ui_ImgButton2) {
+        if(event_code == LV_EVENT_RELEASED) {
             play_state_change = !play_state_change;
             play_state_change == LV_MUSIC_PLAY ?                                        \
             player_control(&v_player, PLAYER_CMD_PLAY, RT_NULL), set_play_picture :  \
@@ -170,21 +162,17 @@ void Button_event(lv_event_t *e)
         }
     }
     // next
-    if (target == ui_ImgButton1)
-    {
-        if (event_code == LV_EVENT_RELEASED)
-        {
-            if (v_player.status == PLAYER_STOP)
+    if(target == ui_ImgButton1) {
+        if(event_code == LV_EVENT_RELEASED) {
+            if(v_player.status == PLAYER_STOP)
                 player_control(&v_player, PLAYER_CMD_PLAY, RT_NULL);
             player_control(&v_player, PLAYER_CMD_NEXT, RT_NULL);
         }
     }
     // prev
-    if (target == ui_ImgButton3)
-    {
-        if (event_code == LV_EVENT_RELEASED)
-        {
-            if (v_player.status == PLAYER_STOP)
+    if(target == ui_ImgButton3) {
+        if(event_code == LV_EVENT_RELEASED) {
+            if(v_player.status == PLAYER_STOP)
                 player_control(&v_player, PLAYER_CMD_PLAY, RT_NULL);
             player_control(&v_player, PLAYER_CMD_LAST, RT_NULL);
         }
@@ -307,7 +295,7 @@ static void lv_audio_wave_create(lv_obj_t *parent)
 {
     ui_Audio_Wave = lv_slider_create(parent);
     lv_slider_set_value(ui_Audio_Wave, 0, LV_ANIM_OFF);
-    if (lv_slider_get_mode(ui_Audio_Wave) == LV_SLIDER_MODE_RANGE) lv_slider_set_left_value(ui_Audio_Wave, 0, LV_ANIM_OFF);
+    if(lv_slider_get_mode(ui_Audio_Wave) == LV_SLIDER_MODE_RANGE) lv_slider_set_left_value(ui_Audio_Wave, 0, LV_ANIM_OFF);
     lv_obj_set_width(ui_Audio_Wave, 310);
     lv_obj_set_height(ui_Audio_Wave, 10);
     lv_obj_set_align(ui_Audio_Wave, LV_ALIGN_BOTTOM_MID);
@@ -342,8 +330,7 @@ static void lv_avi_window_create(lv_obj_t *parent)
 
 void lv_avi_player_draw(int32_t x, int32_t y, const void *pInBuffer, int32_t xSize, int32_t ySize)
 {
-    static lv_img_dsc_t img_dsc =
-    {
+    static lv_img_dsc_t img_dsc = {
         .header.always_zero = 0,
         .header.w = JPEG_WIDTH,
         .header.h = JPEG_HEIGHT,
@@ -358,8 +345,7 @@ void lv_avi_player_draw(int32_t x, int32_t y, const void *pInBuffer, int32_t xSi
     location = x + y * JPEG_WIDTH;
     rt_memcpy(&fbp16[location], pInBuffer, (ySize * JPEG_WIDTH * sizeof(lv_color16_t)));
 
-    if (y == JPEG_HEIGHT - 16)
-    {
+    if(y == JPEG_HEIGHT - 16) {
         img_dsc.data_size = ySize * xSize * sizeof(lv_color16_t);
         img_dsc.data = (const uint8_t *)fbp16;
         lv_img_set_src(avi_obj, &img_dsc);

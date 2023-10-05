@@ -35,29 +35,27 @@ static void can_rx_thread(void *parameter)
     rt_device_set_rx_indicate(can_dev, can_rx_call);
     rt_kprintf("can_rx_thread\n");
 #ifdef RT_CAN_USING_HDR
-    struct rt_can_filter_item items[5] =
+    struct rt_can_filter_item items[5] = {
+        RT_CAN_FILTER_ITEM_INIT(0x100, 0, 0, 0, 0x700, RT_NULL, RT_NULL), /* std,match ID:0x100~0x1ff，hdr 为 - 1，设置默认过滤表 */
+        RT_CAN_FILTER_ITEM_INIT(0x300, 0, 0, 0, 0x700, RT_NULL, RT_NULL), /* std,match ID:0x300~0x3ff，hdr 为 - 1 */
+        RT_CAN_FILTER_ITEM_INIT(0x211, 0, 0, 0, 0x7ff, RT_NULL, RT_NULL), /* std,match ID:0x211，hdr 为 - 1 */
+        RT_CAN_FILTER_STD_INIT(0x486, RT_NULL, RT_NULL),                  /* std,match ID:0x486，hdr 为 - 1 */
         {
-            RT_CAN_FILTER_ITEM_INIT(0x100, 0, 0, 0, 0x700, RT_NULL, RT_NULL), /* std,match ID:0x100~0x1ff，hdr 为 - 1，设置默认过滤表 */
-            RT_CAN_FILTER_ITEM_INIT(0x300, 0, 0, 0, 0x700, RT_NULL, RT_NULL), /* std,match ID:0x300~0x3ff，hdr 为 - 1 */
-            RT_CAN_FILTER_ITEM_INIT(0x211, 0, 0, 0, 0x7ff, RT_NULL, RT_NULL), /* std,match ID:0x211，hdr 为 - 1 */
-            RT_CAN_FILTER_STD_INIT(0x486, RT_NULL, RT_NULL),                  /* std,match ID:0x486，hdr 为 - 1 */
-            {
-                0x555,
-                0,
-                0,
-                0,
-                0x7ff,
-                7,
-            } /* std,match ID:0x555，hdr 为 7，指定设置 7 号过滤表 */
-        };
+            0x555,
+            0,
+            0,
+            0,
+            0x7ff,
+            7,
+        } /* std,match ID:0x555，hdr 为 7，指定设置 7 号过滤表 */
+    };
     struct rt_can_filter_config cfg = {5, 1, items}; /* 一共有 5 个过滤表 */
     /* 设置硬件过滤表 */
     res = rt_device_control(can_dev, RT_CAN_CMD_SET_FILTER, &cfg);
     RT_ASSERT(res == RT_EOK);
 #endif
 
-    while (1)
-    {
+    while(1) {
         /* hdr 值为 - 1，表示直接从 uselist 链表读取数据 */
         rxmsg.hdr_index = -1;
         /* 阻塞等待接收信号量 */
@@ -66,8 +64,7 @@ static void can_rx_thread(void *parameter)
         rt_device_read(can_dev, 0, &rxmsg, sizeof(rxmsg));
         /* 打印数据 ID 及内容 */
         rt_kprintf("ID:%x", rxmsg.id);
-        for (i = 0; i < 8; i++)
-        {
+        for(i = 0; i < 8; i++) {
             rt_kprintf("%2x", rxmsg.data[i]);
         }
 
@@ -83,18 +80,15 @@ int can_sample(int argc, char *argv[])
     rt_thread_t thread;
     char can_name[RT_NAME_MAX];
 
-    if (argc == 2)
-    {
+    if(argc == 2) {
         rt_strncpy(can_name, argv[1], RT_NAME_MAX);
     }
-    else
-    {
+    else {
         rt_strncpy(can_name, CAN_DEV_NAME, RT_NAME_MAX);
     }
     /* 查找 CAN 设备 */
     can_dev = rt_device_find(can_name);
-    if (!can_dev)
-    {
+    if(!can_dev) {
         rt_kprintf("find %s failed!\n", can_name);
         return RT_ERROR;
     }
@@ -107,12 +101,10 @@ int can_sample(int argc, char *argv[])
     RT_ASSERT(res == RT_EOK);
     /* 创建数据接收线程 */
     thread = rt_thread_create("can_rx", can_rx_thread, RT_NULL, 1024, 25, 10);
-    if (thread != RT_NULL)
-    {
+    if(thread != RT_NULL) {
         rt_thread_startup(thread);
     }
-    else
-    {
+    else {
         rt_kprintf("create can_rx thread failed!\n");
     }
 
@@ -132,8 +124,7 @@ int can_sample(int argc, char *argv[])
     /* 发送一帧 CAN 数据 */
     {
         size = rt_device_write(can_dev, 0, &msg, sizeof(msg));
-        if (size == 0)
-        {
+        if(size == 0) {
             rt_kprintf("can dev write data failed!\n");
         }
         rt_thread_mdelay(1000);

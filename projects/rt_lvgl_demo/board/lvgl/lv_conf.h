@@ -34,21 +34,21 @@
 #endif
 
 #ifdef BSP_USING_LVGL_VIDEO_DEMO
-#define LV_USE_FILE_EXPLORER    1
-#if LV_USE_FILE_EXPLORER
-    /*Maximum length of path*/
-    #define LV_FILE_EXPLORER_PATH_MAX_LEN        (128)
-    /*Quick access bar, 1:use, 0:not use*/
-    /*Requires: lv_list*/
-    #define LV_FILE_EXPLORER_QUICK_ACCESS        0
-#endif
+    #define LV_USE_FILE_EXPLORER    1
+    #if LV_USE_FILE_EXPLORER
+        /*Maximum length of path*/
+        #define LV_FILE_EXPLORER_PATH_MAX_LEN        (128)
+        /*Quick access bar, 1:use, 0:not use*/
+        /*Requires: lv_list*/
+        #define LV_FILE_EXPLORER_QUICK_ACCESS        0
+    #endif
 
-#define LV_USE_FS_STDIO 1
-#if LV_USE_FS_STDIO
-    #define LV_FS_STDIO_LETTER '/'      /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
-    #define LV_FS_STDIO_PATH "/"        /*Set the working directory. File/directory paths will be appended to it.*/
-    #define LV_FS_STDIO_CACHE_SIZE  0   /*>0 to cache this number of bytes in lv_fs_read()*/
-#endif
+    #define LV_USE_FS_STDIO 1
+    #if LV_USE_FS_STDIO
+        #define LV_FS_STDIO_LETTER '/'      /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
+        #define LV_FS_STDIO_PATH "/"        /*Set the working directory. File/directory paths will be appended to it.*/
+        #define LV_FS_STDIO_CACHE_SIZE  0   /*>0 to cache this number of bytes in lv_fs_read()*/
+    #endif
 #endif
 
 #ifdef PKG_USING_LV_MUSIC_DEMO

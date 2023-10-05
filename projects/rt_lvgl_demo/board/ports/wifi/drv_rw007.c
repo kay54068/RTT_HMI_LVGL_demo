@@ -20,8 +20,7 @@ static void rw007_gpio_init(void)
     rt_pin_write(RA_RW007_RST_PIN, PIN_HIGH);
 
     /* Wait rw007 ready(exit busy stat) */
-    while (!rt_pin_read(RA_RW007_INT_BUSY_PIN))
-    {
+    while(!rt_pin_read(RA_RW007_INT_BUSY_PIN)) {
         rt_thread_delay(5);
     }
 

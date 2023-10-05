@@ -30,22 +30,22 @@ volatile static rt_uint8_t touch_detect_flag = 0;
 
 static void touchpad_read(lv_indev_drv_t *indev, lv_indev_data_t *data)
 {
-    if (touch_detect_flag != 1)
+    if(touch_detect_flag != 1)
         return;
 
     rt_device_read(touch_dev, 0, read_data, 1);
 
-    if (read_data->event == RT_TOUCH_EVENT_NONE)
+    if(read_data->event == RT_TOUCH_EVENT_NONE)
         return;
 
     data->point.x = read_data->x_coordinate;
     data->point.y = read_data->y_coordinate;
 
-    if (read_data->event == RT_TOUCH_EVENT_DOWN)
+    if(read_data->event == RT_TOUCH_EVENT_DOWN)
         data->state = LV_INDEV_STATE_PR;
-    if (read_data->event == RT_TOUCH_EVENT_MOVE)
+    if(read_data->event == RT_TOUCH_EVENT_MOVE)
         data->state = LV_INDEV_STATE_PR;
-    if (read_data->event == RT_TOUCH_EVENT_UP)
+    if(read_data->event == RT_TOUCH_EVENT_UP)
         data->state = LV_INDEV_STATE_REL;
 
     touch_detect_flag = 0;
@@ -64,14 +64,12 @@ rt_err_t gt911_probe(rt_uint16_t x, rt_uint16_t y)
     void *id;
 
     touch_dev = rt_device_find("gt911");
-    if (touch_dev == RT_NULL)
-    {
+    if(touch_dev == RT_NULL) {
         rt_kprintf("can't find device gt911\n");
         return -1;
     }
 
-    if (rt_device_open(touch_dev, RT_DEVICE_FLAG_INT_RX) != RT_EOK)
-    {
+    if(rt_device_open(touch_dev, RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
         rt_kprintf("open device failed!");
         return -1;
     }
@@ -92,8 +90,7 @@ rt_err_t gt911_probe(rt_uint16_t x, rt_uint16_t y)
     rt_device_set_rx_indicate(touch_dev, rx_callback);
 
     read_data = (struct rt_touch_data *)rt_calloc(1, sizeof(struct rt_touch_data));
-    if (!read_data)
-    {
+    if(!read_data) {
         return -RT_ENOMEM;
     }
 

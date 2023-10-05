@@ -35,8 +35,7 @@ int G2d_Drv_HWInit(void)
     _d2_handle = d2_opendevice(0);
 
     d2_err = d2_inithw(_d2_handle, 0);
-    if (d2_err != D2_OK)
-    {
+    if(d2_err != D2_OK) {
         rt_kprintf("Could NOT d2_inithw\n");
         d2_closedevice(_d2_handle);
         return RT_ERROR;
@@ -62,8 +61,7 @@ int G2d_Drv_HWInit(void)
     d2_setlinejoin(_d2_handle, d2_lj_miter);
 
     renderbuffer = d2_newrenderbuffer(_d2_handle, 20, 20);
-    if (!renderbuffer)
-    {
+    if(!renderbuffer) {
         rt_kprintf("NO renderbuffer\n");
         d2_closedevice(_d2_handle);
     }
@@ -74,8 +72,7 @@ int G2d_Drv_HWInit(void)
 void _GraphicsHWDeInit(void)
 {
     // Stop graphics LCD controller
-    while (FSP_SUCCESS != R_GLCDC_Stop(g_display0.p_ctrl))
-    {
+    while(FSP_SUCCESS != R_GLCDC_Stop(g_display0.p_ctrl)) {
         /* Wait for GLCDC register update to complete before closing driver. */
     }
 
@@ -113,8 +110,7 @@ static int32_t _CircleAA(int32_t x0, int32_t y0, int32_t r, int32_t w)
     // Execute render operations
     d2_executerenderbuffer(_d2_handle, renderbuffer, 0);
     d2_flushframe(_d2_handle);
-    while (d2_commandspending(_d2_handle))
-    {
+    while(d2_commandspending(_d2_handle)) {
         /* Do nothing */
     }
 
@@ -166,8 +162,7 @@ void _LCD_FillRect(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t colo
 
 int G2D_Test_Draw_FillRect(int argc, const char *argv[])
 {
-    if (argc > 0)
-    {
+    if(argc > 0) {
         _LCD_FillRect(100, 100, 150, 150, 0x00F800);
         _LCD_FillRect(100, 100, 120, 120, 0x0000FF);
         rt_kprintf("x0:%d y0:%d x1:%d y1:%d\n", atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
