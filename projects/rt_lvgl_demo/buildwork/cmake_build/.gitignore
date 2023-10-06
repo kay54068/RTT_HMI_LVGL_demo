@@ -15,3 +15,4 @@ rtthread.elf
 *.o
 /Objects
 
+version_numbers.h

@@ -23,3 +23,6 @@ ra_cfg.txt
 __pycache__
 .config.old
 .sconsign.dblite
+
+version_numbers.h
+
