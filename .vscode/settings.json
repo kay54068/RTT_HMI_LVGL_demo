@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "lv_demo_video.h": "c",
+        "statfs.h": "c",
+        "lvgl.h": "c",
+        "pm.h": "c",
+        "page_mgmt.h": "c",
+        "gui_maker.h": "c"
+    }
+}

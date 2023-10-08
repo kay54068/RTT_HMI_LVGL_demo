@@ -113,7 +113,7 @@ rt_err_t rt_hw_gt911_register(void)
 
     rt_hw_gt911_init("gt911", &cfg);
 
-    gt911_probe(480, 272);
+    gt911_probe(LV_HOR_RES_MAX, LV_VER_RES_MAX);
 
     return RT_EOK;
 }
@@ -129,6 +129,12 @@ void lv_port_indev_init(void)
 
     /* Register the driver in LVGL and save the created input device object */
     touch_indev = lv_indev_drv_register(&indev_drv);
+#ifdef BSP_USING_MOUSE    
+    LV_IMG_DECLARE(mouse_cursor_icon);                          /*Declare the image source.*/
+    lv_obj_t * cursor_obj = lv_img_create(lv_scr_act());       /*Create an image object for the cursor */
+    lv_img_set_src(cursor_obj, &mouse_cursor_icon);             /*Set the image source*/
+    lv_indev_set_cursor(touch_indev, cursor_obj);               /*Connect the image  object to the driver*/
+#endif
 
     /* Register touch device */
     rt_err_t res = rt_hw_gt911_register();

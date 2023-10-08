@@ -102,6 +102,9 @@ void lv_port_disp_init(void)
     /*Used to copy the buffer's content to the display*/
     disp_drv.flush_cb = lcd_fb_flush;
 
+    disp_drv.sw_rotate = 1;
+    disp_drv.rotated = LV_DISP_ROT_NONE;
+
     /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
 }

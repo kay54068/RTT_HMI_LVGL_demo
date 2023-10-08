@@ -28,8 +28,8 @@
     #define LV_COLOR_16_SWAP        1
     #define LV_DPI_DEF              99
 #else
-    #define LV_HOR_RES_MAX          480
-    #define LV_VER_RES_MAX          272
+    #define LV_HOR_RES_MAX          DISPLAY_HSIZE_INPUT0
+    #define LV_VER_RES_MAX          DISPLAY_VSIZE_INPUT0
     #define LV_DPI_DEF              89
 #endif
 
@@ -45,10 +45,14 @@
 
     #define LV_USE_FS_STDIO 1
     #if LV_USE_FS_STDIO
-        #define LV_FS_STDIO_LETTER '/'      /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
-        #define LV_FS_STDIO_PATH "/"        /*Set the working directory. File/directory paths will be appended to it.*/
+        #define LV_FS_STDIO_LETTER 'A'      /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
+        #define LV_FS_STDIO_PATH ""        /*Set the working directory. File/directory paths will be appended to it.*/
         #define LV_FS_STDIO_CACHE_SIZE  0   /*>0 to cache this number of bytes in lv_fs_read()*/
     #endif
+    #define LV_USE_PNG 1
+    #define LV_USE_SJPG 1
+
+    #define LV_IMG_CACHE_DEF_SIZE 64
 #endif
 
 #ifdef PKG_USING_LV_MUSIC_DEMO

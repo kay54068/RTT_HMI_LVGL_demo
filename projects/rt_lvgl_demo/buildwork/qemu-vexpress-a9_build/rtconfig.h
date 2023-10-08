@@ -327,6 +327,5 @@
 #define BSP_LCD_WIDTH 480
 #define BSP_LCD_HEIGHT 272
 #define BSP_USING_LVGL_DEMO
-#define BSP_USING_LVGL_VIDEO_DEMO
 
 #endif

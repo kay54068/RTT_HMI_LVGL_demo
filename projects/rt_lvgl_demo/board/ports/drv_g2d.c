@@ -44,9 +44,9 @@ int G2d_Drv_HWInit(void)
     // Clear both buffers
     d2_framebuffer(_d2_handle,
                    &fb_background[0],
-                   480,
-                   480,
-                   272,
+                   LCD_WIDTH,
+                   LCD_WIDTH,
+                   LCD_HEIGHT,
                    (d2_s32) _GetD2Mode());
     d2_clear(_d2_handle, 0x000000);
 

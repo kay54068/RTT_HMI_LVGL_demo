@@ -130,8 +130,11 @@ void lv_port_disp_init(void)
     /*Set a display buffer*/
     disp_drv.draw_buf = &disp_buf;
 
-    /*Used to copy the buffer's content to the display*/
+    /*Used to copy the buffer's content to the display*/            
     disp_drv.flush_cb = disp_flush;
+
+    disp_drv.sw_rotate = 1;
+    disp_drv.rotated = LV_DISP_ROT_NONE;
 
 #if LV_USE_GPU_RA6M3_G2D
     /* Initialize GPU module */
